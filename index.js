@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const emailCell = `<td class='border px-4 py-2'>${entry.email}</td>`;
             const passwordCell = `<td class='border px-4 py-2'>${entry.password}</td>`;
             const dobCell = `<td class='border px-4 py-2'>${entry.dob}</td>`;
-            const termsCell = `<td class='border px-4 py-2'>${entry.acceptedTermsAndconditions}</td>`;
+            const termsCell = `<td class='border px-4 py-2'>${entry.acceptTermsAndconditions}</td>`;
 
             const row = `<tr>${nameCell} ${emailCell} ${passwordCell} ${dobCell} ${termsCell}</tr>`;
             return row;
@@ -39,6 +39,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let details = document.getElementById("user-entries");
         details.innerHTML = table;
+    };
+
+    // Function to display all entries in the table
+    const displayAllEntries = () => {
+        const allEntries = retrieveEntries();
+        const tableEntries = allEntries.map((entry) => {
+            const nameCell = `<td class='border px-4 py-2'>${entry.name}</td>`;
+            const emailCell = `<td class='border px-4 py-2'>${entry.email}</td>`;
+            const passwordCell = `<td class='border px-4 py-2'>${entry.password}</td>`;
+            const dobCell = `<td class='border px-4 py-2'>${entry.dob}</td>`;
+            const termsCell = `<td class='border px-4 py-2'>${entry.acceptTermsAndconditions}</td>`;
+
+            const row = `<tr>${nameCell} ${emailCell} ${passwordCell} ${dobCell} ${termsCell}</tr>`;
+            return row;
+        }).join("\n");
+
+        const table = `<table class="table-auto w-full">
+                        <tr>
+                            <th class="px-4 py-2">Name</th>
+                            <th class="px-4 py-2">Email</th>
+                            <th class="px-4 py-2">Password</th>
+                            <th class="px-4 py-2">DOB</th>
+                            <th class="px-4 py-2">Accepted Terms?</th>
+                        </tr>
+                        ${tableEntries}
+                    </table>`;
+
+        let details = document.getElementById("user-entries");
+        details.innerHTML = table;
+    };
+
+    // Update table with the latest entry
+    const updateTableWithLatestEntry = (entry) => {
+        const tableBody = document.querySelector("table");
+        const newRow = tableBody.insertRow(-1);
+
+        const nameCell = newRow.insertCell(0);
+        nameCell.textContent = entry.name;
+
+        const emailCell = newRow.insertCell(1);
+        emailCell.textContent = entry.email;
+
+        const passwordCell = newRow.insertCell(2);
+        passwordCell.textContent = entry.password;
+
+        const dobCell = newRow.insertCell(3);
+        dobCell.textContent = entry.dob;
+
+        const termsCell = newRow.insertCell(4);
+        termsCell.textContent = entry.acceptTermsAndconditions;
     };
 
     const saveUserForm = (event) => {
@@ -69,7 +119,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             userEntries.push(entry);
             localStorage.setItem("user-entries", JSON.stringify(userEntries));
-            displayEntries();
+            updateTableWithLatestEntry(entry);
+            displayAllEntries(); // Display all entries after adding the latest one
         } else {
             alert("Age should be between 18 and 55.");
         }
